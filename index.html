@@ -66,7 +66,6 @@
           </div>
         </div>
       </section>
-
       <section class="section py-0 is-flex is-justify-content-center">
         <div class="dropdown" id="dropdown">
           <div class="dropdown-trigger">
@@ -258,17 +257,12 @@
           </div>
         </div>
       </section>
-
       <ul id="productList"></ul>
-
       <section class="section">
-        <div
-          class="fixed-grid has-1-cols-mobile has-3-cols-tablet has-3-cols-desktop"
-        >
+        <div class="fixed-grid has-1-cols-mobile has-3-cols-tablet has-3-cols-desktop">
           <div class="grid is-gap-7" id="productos"></div>
         </div>
       </section>
-
       <section class="section">
         <h2 class="title">Carrito de Compras</h2>
         <div
@@ -299,8 +293,92 @@
             <p id="modal-description"></p>
             <p id="modal-price"></p>
           </div>
+          <div>
+            <footer class="modal-card-foot">
+              <button class="button" id="delete-button">Borrar</button>
+              <button class="button is-success" id="add-button">Editar</button>
+          </div>
         </footer>
       </div>
     </div>
+    <div class="modal" id="editProductModal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Editar producto</p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <form id="editProductForm">
+            <div class="field">
+              <label class="label">Nombre</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="Nombre del producto"
+                  id="editProductName"
+                  required
+                  value=""
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Descripción</label>
+              <div class="control">
+                <textarea
+                  class="textarea"
+                  placeholder="Descripción del producto"
+                  id="editProductDescription"
+                  required
+                ></textarea>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Imagen (URL)</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="URL de la imagen"
+                  id="editProductImage"
+                  required
+                  value="" 
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Precio</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="number"
+                  placeholder="Precio del producto"
+                  id="editProductPrice"
+                  required
+                  value="" 
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label" for="editProductCategory">Categoría:</label>
+              <div class="control">
+                <div class="select">
+                  <select id="editProductCategory" required>
+                    <option value="" disabled selected>Seleccioná la categoría</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success mx-2 accent-background" id="updateProductButton">
+            Actualizar
+          </button>
+          <button class="button">Cancelar</button>
+        </footer>
+      </div>
+    </div>    
   </body>
 </html>

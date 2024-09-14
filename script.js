@@ -5,123 +5,94 @@ const searchInput = document.getElementById("searchInput");
 const cardsContainer = document.getElementById("productos");
 const carrito = document.getElementById("listaCarrito");
 const modalDetail = document.getElementById("modal-detail");
+const deleteButton = document.getElementById("delete-button");
 
 let webColor = "#c6c7ff";
 
-const products = [
-  {
-    name: "Mouse Inalámbrico",
-    description: "Mouse ergonómico inalámbrico con DPI ajustable.",
-    price: 29.99,
-    image:
-      "https://f.fcdn.app/imgs/3e4c97/www.zonatecno.com.uy/zoteuy/6f3c/original/catalogo/100041_100041_1/2000-2000/mouse-inalambrico-havit-hv-ms76gt-1600dpi-black-mouse-inalambrico-havit-hv-ms76gt-1600dpi-black.jpg",
-    category: "Accesorios",
-  },
-  {
-    name: "Teclado Mecánico",
-    description:
-      "Teclado mecánico retroiluminado RGB con interruptores Cherry MX.",
-    price: 89.99,
-    image:
-      "https://http2.mlstatic.com/D_NQ_NP_667185-MLU73412738232_122023-O.webp",
-    category: "Periféricos",
-  },
-  {
-    name: "Auriculares Gaming",
-    description:
-      "Auriculares gaming con sonido envolvente y micrófono con cancelación de ruido.",
-    price: 59.99,
-    image:
-      "https://f.fcdn.app/imgs/46c2e8/www.covercompany.com.uy/coveuy/c5b2/original/catalogo/2-4551_11535_1/2000-2000/auriculares-inalambricos-jbl-tune-770nc-c-cancelacion-de-ruido-black.jpg",
-    category: "Audio",
-  },
-  {
-    name: "Monitor de 27 pulgadas",
-    description: "Monitor 4K UHD con pantalla IPS y tasa de refresco de 144Hz.",
-    price: 329.99,
-    image:
-      "https://http2.mlstatic.com/D_NQ_NP_735145-MLA48131216536_112021-O.webp",
-    category: "Pantallas",
-  },
-  {
-    name: "Soporte para Laptop",
-    description:
-      "Soporte ajustable de aluminio para una configuración ergonómica.",
-    price: 39.99,
-    image:
-      "https://clever.uy/cdn/shop/products/D_797687-MLU48505835167_122021-O_600x600.jpg?v=1639603123",
-    category: "Accesorios",
-  },
-  {
-    name: "Hub USB-C",
-    description:
-      "Hub multi-puerto USB-C con HDMI, USB 3.0 y lector de tarjetas SD.",
-    price: 24.99,
-    image: "https://m.media-amazon.com/images/I/61S7Asj36AL._AC_SL1500_.jpg",
-    category: "Periféricos",
-  },
-  {
-    name: "SSD Externo",
-    description: "SSD externo portátil con 1TB de almacenamiento y USB 3.1.",
-    price: 129.99,
-    image:
-      "https://pronet.uy/wp-content/uploads/SSD-Externo-1TB-Kingston-XS1000-pronet.jpg",
-    category: "Almacenamiento",
-  },
-  {
-    name: "Soporte para Smartphone",
-    description:
-      "Soporte ajustable para smartphone con rotación de 360 grados.",
-    price: 19.99,
-    image:
-      "https://http2.mlstatic.com/D_NQ_NP_821020-MLU77736270331_072024-O.webp",
-    category: "Accesorios",
-  },
-  {
-    name: "Altavoz Bluetooth",
-    description: "Altavoz Bluetooth portátil con 10 horas de autonomía.",
-    price: 49.99,
-    image:
-      "https://circuit.com.uy/images/thumbs/0099742_parlante-bluetooth-doble-8-luces-40w-j2808_550.jpeg",
-    category: "Audio",
-  },
-  {
-    name: "Cámara Web",
-    description:
-      "Cámara web HD 1080p con micrófono incorporado y cubierta de privacidad.",
-    price: 34.99,
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXs8o1qWTFTaGVERaMIo4FKP6CkbkYD7xv_g&s",
-    category: "Periféricos",
-  },
-  {
-    name: "Cargador Inalámbrico",
-    description: "Cargador inalámbrico rápido con compatibilidad Qi.",
-    price: 25.99,
-    image:
-      "https://f.fcdn.app/imgs/a2390c/zonalaptop.com.uy/zlapuy/39f2/original/catalogo/848061060119_848061060119_1/2000-2000/cargador-inalambrico-anker-powerwave-pad-cargador-inalambrico-anker-powerwave-pad.jpg",
-    category: "Accesorios",
-  },
-  {
-    name: "Auriculares con Cancelación de Ruido",
-    description:
-      "Auriculares con cancelación de ruido y conectividad Bluetooth.",
-    price: 199.99,
-    image: "https://m.media-amazon.com/images/I/51Ltm3tbH2L.jpg",
-    category: "Audio",
-  },
-  {
-    name: "Reloj Inteligente",
-    description: "Reloj inteligente con monitor de ritmo cardíaco y GPS.",
-    price: 149.99,
-    image:
-      "https://prod-resize.tiendainglesa.com.uy/images/medium/P571137-2.jpg?20240219094552,Smartwatch-S8-Negro-en-Tienda-Inglesa",
-    category: "Wearables",
-  },
-];
+let products = [];
+
+const getProducts = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/api/tasks");
+    if (response.ok) {
+      let productsJson = await response.json();
+      products = productsJson;
+      renderProducts(productsJson);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const createTask = async (task) => {
+  try {
+    const response = await fetch("http://localhost:3000/api/tasks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(task),
+    });
+
+    if (response.ok) {
+      const taskJson = await response.json();
+      products.push(taskJson);
+      renderProducts(products);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deleteTask = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      products = products.filter((product) => product.id !== id);
+      renderProducts(products);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateTask = async (id, task) => {
+  console.log(id, task);
+  try {
+    const response = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(task),
+    });
+
+    if (response.ok) {
+      const taskJson = await response.json();
+      products = products.map((product) =>
+        product.id === id ? taskJson : product
+      );
+      renderProducts(products);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+deleteButton.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const id = modalDetail["data-product-id"];
+  console.log(id);
+  deleteTask(id);
+  modalDetail.classList.remove("is-active");
+});
 
 window.onload = () => {
-  renderProducts(products);
+  getProducts();
 };
 
 document.getElementById("searchButton").addEventListener("click", () => {
@@ -168,8 +139,7 @@ document.querySelectorAll(".item-categoria").forEach((item) => {
 function openDetailModal(product) {
   product.stopPropagation();
 
-  modalDetail.classList.add("is-active");
-  const productDetail = products.find((p) => p.name === product.target.id);
+  const productDetail = products.find((p) => p.name == product.target.id);
 
   modalDetail.querySelector(".modal-card-title").textContent =
     productDetail.name;
@@ -179,6 +149,9 @@ function openDetailModal(product) {
   document.getElementById(
     "modal-price"
   ).textContent = `${productDetail.price} USD`;
+  document.getElementById("modal-detail")["data-product-id"] = productDetail.id;
+
+  modalDetail.classList.add("is-active");
 }
 
 function renderProducts(products) {
@@ -216,12 +189,22 @@ const categorias = [
 ];
 
 const productCategorySelect = document.getElementById("productCategory");
+const editProductCategorySelect = document.getElementById(
+  "editProductCategory"
+);
 
 categorias.forEach((categoria) => {
   const option = document.createElement("option");
   option.value = categoria;
   option.textContent = categoria;
   productCategorySelect.appendChild(option);
+});
+
+categorias.forEach((categoria) => {
+  const option = document.createElement("option");
+  option.value = categoria;
+  option.textContent = categoria;
+  editProductCategorySelect.appendChild(option);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -267,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveProductButton = document.getElementById("saveProductButton");
   const productForm = document.getElementById("productForm");
 
-  saveProductButton.addEventListener("click", () => {
+  saveProductButton.addEventListener("click", async () => {
     if (productForm.checkValidity()) {
       const name = document.getElementById("productName").value;
       const description = document.getElementById("productDescription").value;
@@ -282,18 +265,13 @@ document.addEventListener("DOMContentLoaded", () => {
         category: "Accessories",
       };
 
-      addProductToList(newProduct);
+      await createTask(newProduct);
       closeAllModals();
       productForm.reset();
     } else {
       alert("Por favor, completa todos los campos.");
     }
   });
-
-  function addProductToList(product) {
-    products.push(product);
-    renderProducts(products);
-  }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -324,7 +302,6 @@ function attachEventListeners() {
 function toggleDropdown() {
   this.classList.toggle("is-active");
 }
-
 
 function drag(event) {
   event.dataTransfer.setData("text", event.target.dataset.productId);
@@ -497,3 +474,53 @@ function getEmoji() {
   const emojis = ["🚀", "🌈", "🦄", "🌟", "🎉", "🎈", "🎊", "🔥", "💥", "🌲"];
   return emojis[Math.floor(Math.random() * emojis.length)];
 }
+
+function openEditModal(id) {
+  const productData = products.find((product) => product.id === id);
+  document.getElementById("editProductName").value = productData.name;
+  document.getElementById("editProductDescription").value =
+    productData.description;
+  document.getElementById("editProductImage").value = productData.imageUrl;
+  document.getElementById("editProductPrice").value = productData.price;
+
+  const categorySelect = document.getElementById("editProductCategory");
+  categorySelect.value = productData.category;
+
+  const editModal = document.getElementById("editProductModal");
+  editModal.classList.add("is-active");
+  editModal["data-product-id"] = id;
+}
+
+document.getElementById("add-button").addEventListener("click", function () {
+  openEditModal(document.getElementById("modal-detail")["data-product-id"]);
+});
+
+document
+  .querySelector("#editProductModal .delete")
+  .addEventListener("click", function () {
+    document.getElementById("editProductModal").classList.remove("is-active");
+  });
+
+document
+  .getElementById("updateProductButton")
+  .addEventListener("click", async () => {
+    const id = document.getElementById("editProductModal")["data-product-id"];
+    const name = document.getElementById("editProductName").value;
+    const description = document.getElementById("editProductDescription").value;
+    const image = document.getElementById("editProductImage").value;
+    const price = parseFloat(document.getElementById("editProductPrice").value);
+    const category = document.getElementById("editProductCategory").value;
+
+    const updatedProduct = {
+      name,
+      description,
+      image,
+      price,
+      category,
+    };
+
+    console.log(updatedProduct);
+
+    await updateTask(id, updatedProduct);
+    document.getElementById("editProductModal").classList.remove("is-active");
+  });
